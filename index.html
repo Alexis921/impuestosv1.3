@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Impuestos Perú</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            margin: 10px 5px;
+            cursor: pointer;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        .btn-importar {
+            background-color: green;
+            color: white;
+        }
+
+        .section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        #resultados {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .tablero-calculo {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .tablero-calculo input {
+            width: calc(100% - 20px);
+        }
+
+        .tablero-calculo h2 {
+            color: #555;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            font-size: 14px;
+            color: #777;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plataforma de Cálculo de Impuestos</h1>
+        
+        <!-- Tipo de Persona -->
+        <label for="tipoPersona">Tipo de Persona:</label>
+        <select id="tipoPersona">
+            <option value="natural">Natural</option>
+            <option value="juridica">Jurídica</option>
+        </select>
+
+        <!-- RUC -->
+        <label for="ruc">Número de RUC:</label>
+        <input type="text" id="ruc" maxlength="11" placeholder="Ingrese su RUC">
+
+        <!-- Botón Importar RUC -->
+        <button id="importarRuc">Importar</button>
+
+        <!-- Razón Social -->
+        <label for="razonSocial">Denominación o Razón Social:</label>
+        <input type="text" id="razonSocial" placeholder="Ingrese su razón social">
+
+        <!-- Mes y Año de Declaración -->
+        <label for="mes">Mes:</label>
+        <select id="mes">
+            <option value="01">Enero</option>
+            <option value="02">Febrero</option>
+            <option value="03">Marzo</option>
+            <option value="04">Abril</option>
+            <option value="05">Mayo</option>
+            <option value="06">Junio</option>
+            <option value="07">Julio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+        </select>
+
+        <label for="anio">Año:</label>
+        <select id="anio">
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+        </select>
+
+        <!-- Régimen Tributario -->
+        <label for="regimen">Régimen Tributario:</label>
+        <select id="regimen">
+            <option value="RUS">RUS</option>
+            <option value="RER">RER</option>
+            <option value="MYPE">MYPE TRIBUTARIO</option>
+            <option value="GENERAL">GENERAL</option>
+        </select>
+
+        <!-- Ventas -->
+        <div class="section">
+            <h2>Ventas</h2>
+            <label for="ventasBase">Base Imponible:</label>
+            <input type="number" id="ventasBase" placeholder="Ingrese base imponible">
+            <label for="ventasIGV">IGV:</label>
+            <input type="number" id="ventasIGV" placeholder="Ingrese IGV">
+            <label for="ventasTotal">Importe Total:</label>
+            <input type="number" id="ventasTotal" placeholder="Ingrese importe total">
+            <button id="importarVentas" class="btn-importar">Importar Ventas</button>
+        </div>
+
+        <!-- Compras -->
+        <div class="section">
+            <h2>Compras</h2>
+            <label for="comprasBase">Base Imponible:</label>
+            <input type="number" id="comprasBase" placeholder="Ingrese base imponible">
+            <label for="comprasIGV">IGV:</label>
+            <input type="number" id="comprasIGV" placeholder="Ingrese IGV">
+            <label for="comprasTotal">Importe Total:</label>
+            <input type="number" id="comprasTotal" placeholder="Ingrese importe total">
+            <button id="importarCompras" class="btn-importar">Importar Compras</button>
+        </div>
+
+        <!-- Botones de Acción -->
+        <button id="calcularIGV">Calcular IGV</button>
+        <button id="calcularRenta">Calcular Renta</button>
+
+        <!-- Tablero de Cálculo de IGV -->
+        <div class="tablero-calculo" id="tableroIGV">
+            <h2>Tablero de Cálculo del IGV</h2>
+            <label for="igvDeterminado">IGV a Determinar:</label>
+            <input type="number" id="igvDeterminado" readonly>
+            
+            <label for="creditoFiscal">Crédito Fiscal:</label>
+            <input type="number" id="creditoFiscal">
+
+            <label for="percepcionesAnteriores">Percepciones del Periodo Anterior:</label>
+            <input type="number" id="percepcionesAnteriores">
+
+            <label for="percepcionesPeriodo">Percepciones del Periodo:</label>
+            <input type="number" id="percepcionesPeriodo">
+
+            <label for="retencionesAnteriores">Retenciones del Periodo Anterior:</label>
+            <input type="number" id="retencionesAnteriores">
+
+            <label for="retencionesPeriodo">Retenciones del Periodo:</label>
+            <input type="number" id="retencionesPeriodo">
+
+            <label for="igvPagar">IGV a Pagar:</label>
+            <input type="number" id="igvPagar" readonly>
+
+            <button class="btn-importar">Importar Data</button>
+        </div>
+
+        <!-- Tablero de Cálculo de la Renta -->
+        <div class="tablero-calculo" id="tableroRenta">
+            <h2>Tablero de Cálculo de la Renta</h2>
+            <label for="rentaDeterminado">Renta a Determinar:</label>
+            <input type="number" id="rentaDeterminado" readonly>
+            
+            <label for="creditoRenta">Crédito a favor de la Renta:</label>
+            <input type="number" id="creditoRenta">
+
+            <label for="rentaPagar">Renta a Pagar:</label>
+            <input type="number" id="rentaPagar" readonly>
+
+            <button class="btn-importar">Importar Data</button>
+        </div>
+
+        <!-- Botones adicionales -->
+        <div>
+            <button id="validar">Validar</button>
+            <button id="enviarExperto">Enviar al Experto</button>
+            <button id="presentar">Presentar</button>
+            <button id="limpiar">Limpiar</button>
+        </div>
+
+        <!-- Resultados -->
+        <div id="resultados"></div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        Desarrollado por Smartcont Tecnology System
+    </footer>
+
+    <script>
+        // Clase para calcular impuestos
+        class CalculadoraImpuestos {
+            constructor(baseVentas, igvVentas, totalVentas, baseCompras, igvCompras, totalCompras, regimen) {
+                this.baseVentas = baseVentas;
+                this.igvVentas = igvVentas;
+                this.totalVentas = totalVentas;
+                this.baseCompras = baseCompras;
+                this.igvCompras = igvCompras;
+                this.totalCompras = totalCompras;
+                this.regimen = regimen;
+            }
+
+            calcularIGV() {
+                if (this.regimen === "RUS") {
+                    document.getElementById("tableroIGV").style.display = 'none';
+                    return "Régimen no afecto al IGV";
+                } else {
+                    let igvDeterminado = this.igvVentas - this.igvCompras;
+                    document.getElementById("igvDeterminado").value = igvDeterminado;
+
+                    let creditoFiscal = parseFloat(document.getElementById("creditoFiscal").value) || 0;
+                    let percepcionesAnteriores = parseFloat(document.getElementById("percepcionesAnteriores").value) || 0;
+                    let percepcionesPeriodo = parseFloat(document.getElementById("percepcionesPeriodo").value) || 0;
+                    let retencionesAnteriores = parseFloat(document.getElementById("retencionesAnteriores").value) || 0;
+                    let retencionesPeriodo = parseFloat(document.getElementById("retencionesPeriodo").value) || 0;
+
+                    let igvPagar = igvDeterminado - creditoFiscal - percepcionesAnteriores - percepcionesPeriodo - retencionesAnteriores - retencionesPeriodo;
+                    document.getElementById("igvPagar").value = igvPagar;
+
+                    return `IGV a pagar: ${igvPagar}`;
+                }
+            }
+
+            calcularRenta() {
+                let renta = 0;
+                if (this.regimen === "RUS") {
+                    renta = Math.max(this.totalVentas, this.totalCompras);
+                    if (renta <= 5000) {
+                        renta = 20;
+                    } else if (renta > 5000 && renta <= 8000) {
+                        renta = 50;
+                    } else {
+                        return "Debe de cambiar de Régimen Tributario";
+                    }
+                } else if (this.regimen === "RER") {
+                    renta = this.baseVentas * 0.015;
+                } else {
+                    renta = this.baseVentas * 0.01;
+                }
+
+                document.getElementById("rentaDeterminado").value = renta;
+                let creditoRenta = parseFloat(document.getElementById("creditoRenta").value) || 0;
+                let rentaPagar = renta - creditoRenta;
+                document.getElementById("rentaPagar").value = rentaPagar;
+
+                return `Renta a pagar: ${rentaPagar}`;
+            }
+        }
+
+        // Funciones para manejar eventos del formulario
+        document.getElementById("calcularIGV").addEventListener("click", () => {
+            let baseVentas = parseFloat(document.getElementById("ventasBase").value);
+            let igvVentas = parseFloat(document.getElementById("ventasIGV").value);
+            let totalVentas = parseFloat(document.getElementById("ventasTotal").value);
+            let baseCompras = parseFloat(document.getElementById("comprasBase").value);
+            let igvCompras = parseFloat(document.getElementById("comprasIGV").value);
+            let totalCompras = parseFloat(document.getElementById("comprasTotal").value);
+            let regimen = document.getElementById("regimen").value;
+
+            let calculadora = new CalculadoraImpuestos(baseVentas, igvVentas, totalVentas, baseCompras, igvCompras, totalCompras, regimen);
+
+            // Mostrar el tablero de cálculo solo para los regímenes aplicables
+            if (regimen !== "RUS") {
+                document.getElementById("tableroIGV").style.display = 'block';
+            }
+
+            document.getElementById("resultados").innerHTML = calculadora.calcularIGV();
+        });
+
+        document.getElementById("calcularRenta").addEventListener("click", () => {
+            let baseVentas = parseFloat(document.getElementById("ventasBase").value);
+            let totalVentas = parseFloat(document.getElementById("ventasTotal").value);
+            let totalCompras = parseFloat(document.getElementById("comprasTotal").value);
+            let regimen = document.getElementById("regimen").value;
+
+            let calculadora = new CalculadoraImpuestos(baseVentas, 0, totalVentas, 0, 0, totalCompras, regimen);
+
+            // Mostrar el tablero de renta
+            document.getElementById("tableroRenta").style.display = 'block';
+
+            document.getElementById("resultados").innerHTML = calculadora.calcularRenta();
+        });
+    </script>
+</body>
+</html>
